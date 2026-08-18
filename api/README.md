@@ -44,7 +44,7 @@ GET /api/games/company-battle
 ## 로컬 실행 흐름
 
 ```bash
-cd songo
+cd /Users/koh/songo
 python3 api/server.py
 ```
 
@@ -55,7 +55,9 @@ http://localhost:8000
 http://localhost:8000/api/games/company-battle
 ```
 
-> 실제 서비스에서는 이 API가 DB, AI, 사용자 저장 정보를 기반으로 응답하게 된다. 지금은 개발을 위해 더미 데이터로 먼저 연결해본다.
+> 이 프로젝트는 Django `runserver`가 아니라 `api/server.py`를 직접 실행하는 구조다. `python3 manage.py runserver`는 이 프로젝트에 맞지 않는다.
+
+실제 서비스에서는 이 API가 DB, AI, 사용자 저장 정보를 기반으로 응답하게 된다. 지금은 개발을 위해 더미 데이터로 먼저 연결해본다.
 
 ## 초보자 팁
 

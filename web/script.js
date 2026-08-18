@@ -37,17 +37,15 @@ const shareButton = document.getElementById('share');
 
 let streak = 0;
 let done = false;
-let currentData = {
-  a: null,
-  b: null,
-};
+let currentData = { a: null, b: null };
+let currentRound = 0;
 
 function renderRound(data) {
   const [left, right] = data.companies;
   currentData = { a: left, b: right };
 
   titleElement.textContent = data.title;
-  descriptionElement.textContent = data.description;
+  descriptionElement.textContent = `${data.description} · 라운드 ${currentRound + 1}`;
 
   cards.forEach((card) => {
     const side = card.dataset.side;
@@ -58,6 +56,7 @@ function renderRound(data) {
     nameElement.textContent = company.name;
     metaElement.textContent = company.summary;
     card.classList.remove('picked');
+    card.disabled = false;
   });
 
   done = false;
@@ -73,6 +72,7 @@ async function fetchRound() {
     }
 
     const data = await response.json();
+    currentRound += 1;
     renderRound(data);
   } catch (error) {
     titleElement.textContent = '기업 배틀';
@@ -86,6 +86,7 @@ async function fetchRound() {
 
       card.querySelector('.co-name').textContent = fallback.name;
       card.querySelector('[data-meta]').textContent = fallback.summary;
+      card.disabled = true;
     });
   }
 }
@@ -97,14 +98,25 @@ cards.forEach((card) => {
     done = true;
     const pick = card.dataset.side;
     const win = currentData.a.score >= currentData.b.score ? 'a' : 'b';
+    const isCorrect = pick === win;
 
     cards.forEach((item) => {
       item.classList.remove('picked');
+      item.disabled = true;
     });
 
     card.classList.add('picked');
-    streak = pick === win ? streak + 1 : 0;
+    streak = isCorrect ? streak + 1 : 0;
     document.getElementById('streak').textContent = String(streak);
+
+    const winnerName = currentData[win].name;
+    descriptionElement.textContent = isCorrect
+      ? `정답입니다! ${winnerName}가 더 큰 기업이었습니다.`
+      : `오답입니다. 정답은 ${winnerName}입니다.`;
+
+    setTimeout(async () => {
+      await fetchRound();
+    }, 1200);
   });
 });
 

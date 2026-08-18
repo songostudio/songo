@@ -1,3 +1,5 @@
+import random
+
 COMPANIES = [
     {"id": 1, "name": "넥슨", "revenue": 4.0, "employees": 7700, "tag": "게임"},
     {"id": 2, "name": "크래프톤", "revenue": 2.4, "employees": 1900, "tag": "게임"},
@@ -12,32 +14,41 @@ COMPANIES = [
 ]
 
 
+def compute_score(company):
+    max_revenue = max(item["revenue"] for item in COMPANIES)
+    max_employees = max(item["employees"] for item in COMPANIES)
+    revenue_score = company["revenue"] / max_revenue
+    employee_score = company["employees"] / max_employees
+    return round((revenue_score * 0.7) + (employee_score * 0.3), 4)
+
+
 def get_company_battle_round():
-    left = COMPANIES[0]
-    right = COMPANIES[1]
+    left, right = random.sample(COMPANIES, 2)
+    left_score = compute_score(left)
+    right_score = compute_score(right)
+
+    left_item = {
+        "id": left["id"],
+        "name": left["name"],
+        "revenue": left["revenue"],
+        "employees": left["employees"],
+        "tag": left["tag"],
+        "score": left_score,
+        "summary": f"매출 {left['revenue']}조 · 직원 {left['employees']}명",
+    }
+    right_item = {
+        "id": right["id"],
+        "name": right["name"],
+        "revenue": right["revenue"],
+        "employees": right["employees"],
+        "tag": right["tag"],
+        "score": right_score,
+        "summary": f"매출 {right['revenue']}조 · 직원 {right['employees']}명",
+    }
 
     return {
         "title": "기업 배틀",
-        "description": "매출과 직원 수를 기준으로 더 큰 기업을 고르는 간단한 게임",
-        "companies": [
-            {
-                "id": left["id"],
-                "name": left["name"],
-                "revenue": left["revenue"],
-                "employees": left["employees"],
-                "tag": left["tag"],
-                "score": left["revenue"],
-                "summary": f"매출 {left['revenue']}조 · 직원 {left['employees']}명",
-            },
-            {
-                "id": right["id"],
-                "name": right["name"],
-                "revenue": right["revenue"],
-                "employees": right["employees"],
-                "tag": right["tag"],
-                "score": right["revenue"],
-                "summary": f"매출 {right['revenue']}조 · 직원 {right['employees']}명",
-            },
-        ],
-        "winner": "left" if left["revenue"] >= right["revenue"] else "right",
+        "description": "매출과 직원 수를 종합한 점수로 더 큰 기업을 고르는 게임",
+        "companies": [left_item, right_item],
+        "winner": "left" if left_score >= right_score else "right",
     }

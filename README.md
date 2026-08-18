@@ -248,4 +248,22 @@ songo/
 - 게임 로직을 `games/`로 이동시켜 구조화
 - 이후 실제 DB 또는 AI 연동으로 확장
 
+## 로컬 서버 실행
+
+이 프로젝트는 Django `runserver`가 아니라, Python 스크립트를 직접 실행하는 구조다.
+
+```bash
+cd /Users/koh/songo
+python3 api/server.py
+```
+
+실행 후 브라우저에서 아래 주소를 확인한다.
+
+```text
+http://localhost:8000
+http://localhost:8000/api/games/company-battle
+```
+
+> `python3 manage.py runserver`는 Django 전용 명령어이고, 이 프로젝트는 `api/server.py`를 직접 실행하는 방식으로 서버를 켠다.
+
 ---
